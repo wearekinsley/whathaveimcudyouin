@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f9f9f9;
+  color: #333;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+}
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 70%;
+}
+button {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+#results img {
+  display: block;
+  margin: auto;
+}
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
