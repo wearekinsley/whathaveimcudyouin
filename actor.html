@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Actor Profile</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html">← Back to Search</a>
+    <div id="actorProfile"></div>
+  </div>
+  <script src="data/aliases.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const actorId = urlParams.get('id');
+    const apiKey = "03736f4f029a78812c48af853569b298";
+
+    async function loadActorProfile(id) {
+      const res = await fetch(`https://api.themoviedb.org/3/person/${id}?api_key=${apiKey}`);
+      const creditsRes = await fetch(`https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=${apiKey}`);
+      const data = await res.json();
+      const creditsData = await creditsRes.json();
+
+      const container = document.getElementById("actorProfile");
+
+      const img = document.createElement("img");
+      img.src = data.profile_path ? `https://image.tmdb.org/t/p/w300${data.profile_path}` : "https://via.placeholder.com/300x450";
+      img.alt = data.name;
+      img.style.width = "150px";
+      img.style.borderRadius = "12px";
+
+      const info = document.createElement("div");
+      info.innerHTML = `
+        <h2>${data.name}</h2>
+        <p><strong>Bio:</strong> ${data.biography || "No biography available."}</p>
+        <p><strong>Birthday:</strong> ${data.birthday || "N/A"}</p>
+        <p><strong>Known For:</strong> ${data.known_for_department || "N/A"}</p>
+        <p><a href="https://www.themoviedb.org/person/${id}" target="_blank">TMDb Profile</a></p>
+      `;
+
+      const mcuMovies = creditsData.cast.filter(movie => knownMcuMovieIds.includes(movie.id));
+      if (mcuMovies.length > 0) {
+        const list = document.createElement("ul");
+        mcuMovies.forEach(movie => {
+          const li = document.createElement("li");
+          li.textContent = `${movie.title} as ${movie.character}`;
+          list.appendChild(li);
+        });
+        info.innerHTML += "<h3>MCU Movies:</h3>";
+        info.appendChild(list);
+      }
+
+      container.appendChild(img);
+      container.appendChild(info);
+    }
+
+    const knownMcuMovieIds = [1726, 10138, 10195, 24428, 68721, 76338, 100402, 118340, 99861, 299536, 299534, 497698, 566525, 315635, 634649, 284052];
+    loadActorProfile(actorId);
+  </script>
+</body>
+</html>
